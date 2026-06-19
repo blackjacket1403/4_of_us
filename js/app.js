@@ -320,7 +320,7 @@
           '<div class="vault-head">' +
             '<div class="vhl"><div class="vault-label">' + vlabel + '</div><div class="vault-sub">' + b.len + " DIGITS · " + (b.rows - b.guesses.length) + " GUESSES LEFT</div></div>" +
             '<div class="turn-chip" style="--pc:' + pl.color + '">' + (S.crew > 1 ? esc(pl.name) + "'S TURN" : "ON THE CLOCK") + "</div>" +
-            '<button class="gear-btn" id="gear">GEAR ⚙ <b>⛁ ' + pl.loot + "</b></button>" +
+            '<button class="gear-btn' + (gearHintSeen() ? "" : " hint-pulse") + '" id="gear">GEAR ⚙ <b>⛁ ' + pl.loot + "</b></button>" +
           "</div>" +
           probeHint(b) +
           '<div class="grid" id="grid">' + gridRows(b) + "</div>" +
@@ -331,6 +331,7 @@
       "</section>";
     bindPlay();
     updateTimerDisplay();
+    showGearHint();
   }
 
   function probeHint(b) {
@@ -562,6 +563,7 @@
   function openShop() {
     var b = activeBoard();
     if (b.solved || b.busted) return;
+    dismissGearHint();
     var pl = activePlayer();
     var ov = overlayEl();
     // who can still be sabotaged this vault? players later in the order, not done
@@ -958,6 +960,32 @@
   }
   TUMBLER.showLeaderboard = showLeaderboard;
   TUMBLER.postScore = postScore;
+
+  /* ====================================================================
+   *  FIRST-TIME GEAR-SHOP HINT (shown once, ever)
+   * ==================================================================== */
+  function gearHintSeen() { try { return localStorage.getItem("tumbler.gearHintSeen") === "1"; } catch (e) { return true; } }
+  function dismissGearHint() {
+    try { localStorage.setItem("tumbler.gearHintSeen", "1"); } catch (e) {}
+    var h = document.querySelector(".gear-hint"); if (h && h.parentNode) h.parentNode.removeChild(h);
+    var g = document.querySelector("#gear"); if (g) g.classList.remove("hint-pulse");
+  }
+  function showGearHint() {
+    if (gearHintSeen()) return;
+    if (document.querySelector(".gear-hint")) return; // already up
+    var gear = document.querySelector("#gear"); if (!gear) return;
+    var rect = gear.getBoundingClientRect();
+    var hint = document.createElement("div");
+    hint.className = "gear-hint";
+    hint.innerHTML = '<div class="gear-hint-arrow"></div>💡 <b>New here?</b> This is the <b>GEAR</b> shop. Crack vaults to earn loot ⛁, then spend it here on power-ups — or to sabotage your rivals.<button class="gear-hint-x">Got it</button>';
+    document.body.appendChild(hint);
+    hint.style.top = (rect.bottom + 10) + "px";
+    hint.style.right = Math.max(10, window.innerWidth - rect.right) + "px";
+    hint.querySelector(".gear-hint-x").addEventListener("click", dismissGearHint);
+  }
+  TUMBLER.gearHintSeen = gearHintSeen;
+  TUMBLER.showGearHint = showGearHint;
+  TUMBLER.dismissGearHint = dismissGearHint;
 
   document.addEventListener("keydown", function (ev) {
     if (!S) return;

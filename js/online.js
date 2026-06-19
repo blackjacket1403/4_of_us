@@ -257,6 +257,7 @@
   function bindPlayMain() {
     var kb = $("#kb"); if (kb) kb.addEventListener("click", function (ev) { var k = ev.target.closest(".key"); if (k) handleKey(k.getAttribute("data-k")); });
     var g = $("#gear"); if (g) g.addEventListener("click", openShop);
+    if (TUMBLER.showGearHint) TUMBLER.showGearHint();
   }
 
   function computeKeyStates(b) {
@@ -309,7 +310,7 @@
     return '<div class="vault-head">' +
         '<div class="vhl"><div class="vault-label">' + vlabel + '</div><div class="vault-sub">' + b.len + " DIGITS · " + (b.solved ? "solved" : b.busted ? "locked" : (b.rows - b.guesses.length) + " guesses left") + ' · <span id="timer">0:00</span></div></div>' +
         state +
-        '<button class="gear-btn" id="gear">GEAR ⚙ <b>⛁ ' + loot + "</b></button>" +
+        '<button class="gear-btn' + (TUMBLER.gearHintSeen && TUMBLER.gearHintSeen() ? "" : " hint-pulse") + '" id="gear">GEAR ⚙ <b>⛁ ' + loot + "</b></button>" +
       "</div>" + probe +
       '<div class="grid" id="grid">' + grid + "</div>" +
       '<div class="effbar">' + chips.join("") + "</div>" +
@@ -459,6 +460,7 @@
   /* ---- shop ---- */
   function openShop() {
     var b = O.board; if (!b || b.solved || b.busted) return;
+    if (TUMBLER.dismissGearHint) TUMBLER.dismissGearHint();
     var loot = me().loot || 0;
     var targets = sortedPlayers().filter(function (p) { return p.id !== O.meId && p.vault && p.vault.idx === O.vaultIdx && !p.vault.solved && !p.vault.busted; });
     var items = SHOP_ORDER.map(function (key) {

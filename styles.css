@@ -434,6 +434,23 @@ code { font-family: var(--mono); color: var(--brass); }
 .group-row .gr-loot { font-family: var(--mono); font-weight: 800; color: var(--brass); }
 .group-row .gr-name { font-family: var(--display); font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; }
 
+/* ---------- first-time gear hint ---------- */
+.gear-hint {
+  position: fixed; z-index: 45; max-width: 280px;
+  background: var(--steel-700); border: 1px solid var(--brass-deep); border-radius: 11px;
+  padding: 13px 15px; font-size: 13px; line-height: 1.45; color: var(--bone);
+  box-shadow: 0 14px 44px rgba(0,0,0,0.55); animation: rise .26s ease;
+}
+.gear-hint b { color: var(--brass); }
+.gear-hint-arrow { position: absolute; top: -7px; right: 26px; width: 12px; height: 12px; background: var(--steel-700); border-left: 1px solid var(--brass-deep); border-top: 1px solid var(--brass-deep); transform: rotate(45deg); }
+.gear-hint-x { display: inline-block; margin-top: 10px; font-family: var(--mono); font-weight: 700; font-size: 11px; letter-spacing: 0.08em; color: #1f1503; background: var(--brass); border: 0; border-radius: 6px; padding: 7px 14px; cursor: pointer; text-transform: uppercase; }
+.gear-btn.hint-pulse { animation: gear-pulse 1.3s ease-in-out infinite; border-color: var(--brass); }
+@keyframes gear-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232,178,76,0.45); }
+  50% { box-shadow: 0 0 0 7px rgba(232,178,76,0); }
+}
+@media (prefers-reduced-motion: reduce) { .gear-btn.hint-pulse { animation: none; } }
+
 /* ---------- TOAST ---------- */
 .toast {
   position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 24px);
