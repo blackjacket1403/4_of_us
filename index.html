@@ -41,9 +41,18 @@
 
   <noscript><p style="color:#ECECE6;text-align:center;padding:2rem;font-family:sans-serif">TUMBLER needs JavaScript to run.</p></noscript>
 
+  <!-- Firebase (compat) powers cross-device online rooms. Optional: if these
+       fail to load or no config is set, online play falls back to same-browser
+       demo mode and the rest of the game is unaffected. -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js" defer></script>
+  <script src="js/firebase-config.js" defer></script>
+
   <script src="js/words.js" defer></script>
   <script src="js/audio.js" defer></script>
   <script src="js/engine.js" defer></script>
+  <script src="js/net.js" defer></script>
+  <script src="js/online.js" defer></script>
   <script src="js/app.js" defer></script>
 </body>
 </html>

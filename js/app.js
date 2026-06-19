@@ -99,6 +99,7 @@
               '<div class="crew-names" id="crew-names"></div>' +
               '<button class="btn btn--primary cta" id="start">ASSEMBLE CREW ▸</button>' +
             "</div>" +
+            '<div class="online-cta"><span class="online-cta-label">on a call with friends?</span><button class="btn btn--ghost" id="play-online">PLAY ONLINE — LIVE ROOMS ▸</button></div>' +
           "</div>" +
         "</div>" +
         '<div class="best-strip">' +
@@ -110,6 +111,8 @@
     appEl().innerHTML = html;
     renderCrewNames();
     $("#start").addEventListener("click", startGame);
+    var po = $("#play-online");
+    if (po) po.addEventListener("click", function () { if (TUMBLER.Online) TUMBLER.Online.menu(); });
   }
 
   // home selections persist across re-renders within a session
@@ -874,8 +877,15 @@
     // honour OS reduced-motion as the default unless user toggled
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) settings.motion = false;
     bindTopbar();
-    renderHome();
+    // a shared ?room= link drops you straight into the join flow
+    var room = (location.search.match(/[?&]room=([A-Za-z0-9]+)/) || [])[1];
+    if (room && TUMBLER.Online) TUMBLER.Online.menu({ join: room.toUpperCase() });
+    else renderHome();
   }
+
+  // expose a couple of hooks for the online module
+  TUMBLER.toast = toast;
+  TUMBLER.goHome = renderHome;
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

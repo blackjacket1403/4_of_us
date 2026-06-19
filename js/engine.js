@@ -30,6 +30,29 @@
     return validSet(word.length).has(word);
   }
 
+  /* Deterministic PRNG so every client in an online room derives the SAME
+   * vault word from a shared seed — the answer itself is never sent over the
+   * wire (each client validates its own guesses locally). */
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6d2b79f5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function mixSeed(roomSeed, vaultIdx) {
+    return ((roomSeed >>> 0) ^ Math.imul(vaultIdx + 1, 2654435761)) >>> 0;
+  }
+  function seededAnswer(len, seed) {
+    var answers = pool(len).answers;
+    if (!answers.length) return null;
+    var rnd = mulberry32(seed >>> 0);
+    var floor = Math.min(40, Math.floor(answers.length * 0.15));
+    var idx = floor + Math.floor(rnd() * (answers.length - floor));
+    return answers[idx];
+  }
+
   function randomAnswer(len, exclude) {
     var answers = pool(len).answers;
     if (!answers.length) return null;
@@ -130,6 +153,8 @@
     pool: pool,
     isValidWord: isValidWord,
     randomAnswer: randomAnswer,
+    seededAnswer: seededAnswer,
+    mixSeed: mixSeed,
     scoreGuess: scoreGuess,
     isSolved: isSolved,
     mergeKeyStates: mergeKeyStates,

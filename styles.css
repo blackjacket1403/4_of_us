@@ -349,6 +349,43 @@ code { font-family: var(--mono); color: var(--brass); }
 .chip.near { background: var(--brass); color: #1f1503; }
 .chip.miss { background: #1a1f25; color: var(--dim); }
 
+/* ---------- ONLINE: home CTA, menu, lobby ---------- */
+.online-cta { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.online-cta-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
+.online-cta .btn { border-color: var(--brass-deep); color: var(--brass); }
+.online-cta .btn:hover { border-color: var(--brass); }
+
+.online-menu, .lobby { display: grid; place-items: center; min-height: 64vh; }
+.online-panel, .lobby-panel { text-align: center; }
+.block { width: 100%; margin-top: 10px; }
+.back { margin-top: 16px; color: var(--muted); }
+.fld { display: block; text-align: left; margin: 18px 0 6px; }
+.fld span { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; color: var(--dim); display: block; margin-bottom: 6px; }
+.fld .crew-input { width: 100%; }
+.or-line { display: flex; align-items: center; gap: 12px; margin: 18px 0 12px; color: var(--dim); font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+.or-line::before, .or-line::after { content: ""; height: 1px; background: var(--line); flex: 1; }
+.join-row { display: flex; gap: 8px; }
+.join-row .code-input { flex: 1; text-align: center; font-size: 22px; font-weight: 800; letter-spacing: 0.3em; text-transform: uppercase; }
+.join-row .btn { flex: 0 0 auto; }
+
+.demo-banner { font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--brass); background: rgba(232,178,76,0.08); border: 1px solid var(--brass-deep); border-radius: 9px; padding: 10px 12px; margin: 14px 0; text-align: left; }
+.demo-banner code { font-size: 11px; }
+
+.room-code { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
+.rc-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; color: var(--dim); }
+.rc-code { font-family: var(--mono); font-weight: 800; font-size: clamp(40px, 9vw, 64px); letter-spacing: 0.2em; color: var(--hit); text-shadow: 0 0 30px rgba(52,224,161,0.35); }
+
+.lobby-seats { display: grid; gap: 8px; margin: 16px 0; }
+.lobby-seat { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 9px; border: 1px solid var(--line); background: var(--steel-800); text-align: left; }
+.lobby-seat.empty { opacity: 0.5; border-style: dashed; }
+.ls-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--pc, var(--dim)); box-shadow: 0 0 10px var(--pc, transparent); flex: 0 0 auto; }
+.lobby-seat.empty .ls-dot { background: var(--dim); box-shadow: none; }
+.ls-name { font-family: var(--display); font-weight: 600; letter-spacing: 0.03em; font-size: 16px; text-transform: uppercase; }
+.lobby-wait { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 12px; letter-spacing: 0.06em; }
+
+.solved-chip { color: var(--hit) !important; border-color: var(--hit-deep) !important; background: rgba(52,224,161,0.1) !important; }
+.busted-chip { color: var(--alarm) !important; border-color: #6b2020 !important; background: rgba(255,77,77,0.1) !important; }
+
 /* ---------- TOAST ---------- */
 .toast {
   position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 24px);

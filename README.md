@@ -22,9 +22,12 @@ and builds a whole heist around it:
   key on their next guess, **FOG** their feedback, or **PLANT** a fake hint in their ear.
 - **An alarm with teeth.** Every wrong guess trips it. Max it out and the vault locks —
   you lose the haul *and* your combo.
-- **Built for a video call.** Pure pass-the-laptop hotseat. One screen, take turns,
-  no accounts, no server. First to crack each vault grabs the 🏆 jackpot; most loot
-  after five vaults wins. Solo? It's a roguelike score chase against the alarm.
+- **Built for a video call.** Two ways to play together:
+  - **Pass-the-laptop** — one screen, take turns, no accounts, no setup.
+  - **Live online rooms** — everyone on their own device, synced in real time.
+    Create a room, drop the `?room=CODE` link in your Meet chat, and race the same
+    vaults at once with live sabotage. First to crack each vault grabs the 🏆 jackpot;
+    most loot after five vaults wins. Solo? It's a roguelike score chase against the alarm.
 
 ## Modes
 
@@ -35,9 +38,51 @@ and builds a whole heist around it:
 
 Crew size **1–4**. Earn badges: 👑 Kingpin · 💎 Flawless · 👻 Ghost · 🎯 Safecracker · 💰 Big Score.
 
+## Play online (live rooms)
+
+The site stays on GitHub Pages; live rooms ride on a **free Firebase Realtime
+Database** — no Render, no always-on server, no cold starts, and it works on any
+network. The secret word is never sent over the wire: every client derives the
+same vault word locally from a shared room seed, so the database only ever carries
+public progress (loot, alarm, who's cracked) and sabotage messages.
+
+Until you add a Firebase config, **Play Online** runs in same-browser **demo mode**
+(handy for trying it on one machine; it will not sync across devices).
+
+### One-time Firebase setup (~2 min, free)
+
+1. https://console.firebase.google.com → **Add project** (any name).
+2. **Build → Realtime Database → Create Database** (any location, locked mode).
+3. **Project settings ⚙ → Your apps → Web `</>`** → register an app, then copy the
+   `firebaseConfig` values into [`js/firebase-config.js`](js/firebase-config.js).
+4. **Realtime Database → Rules** → paste the rules below → **Publish**.
+5. Commit & push. Cross-device rooms now work — share the `?room=CODE` link.
+
+The web config is **not a secret** — it's designed to live in the client. Access is
+controlled by the rules, not by hiding the config.
+
+### Firebase rules
+
+Casual, open rooms (anyone with the link can read/write a room; the rest of the
+database is locked):
+
+```json
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$room": { ".read": true, ".write": true }
+    }
+  }
+}
+```
+
 ## Tech
 
-A fully static site — no build step, no backend, no tracking.
+A static site — no build step, no tracking. The only optional backend is a free
+Firebase Realtime Database for live online rooms (see above); everything else,
+including all single-player and pass-the-laptop play, runs entirely in the browser.
 
 - **Vanilla HTML / CSS / JS**, loaded as plain `<script>`s so it runs from GitHub Pages
   *and* from a double-clicked `index.html`.
