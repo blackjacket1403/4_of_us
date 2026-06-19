@@ -748,7 +748,7 @@
 
   function shareResult(ranked, badges) {
     var url = location.origin + location.pathname;
-    var lines = ["🔐 TUMBLER — " + (S.mode === "quick" ? "Quick Crack" : "Heist Run")];
+    var lines = ["🔐 i_guess — " + (S.mode === "quick" ? "Quick Crack" : "Heist Run")];
     ranked.forEach(function (pl) {
       lines.push((pl.id === ranked[0].id && S.crew > 1 ? "🏆 " : "") + pl.name + ": cracked " + pl.cracks + "/" + S.plan.length + " · ⛁" + pl.loot + (badges[pl.id].length ? " " + badges[pl.id].join(" ") : ""));
     });
@@ -848,18 +848,21 @@
     ov.innerHTML =
       '<div class="panel how-panel">' +
         '<h2 class="display">HOW TO PULL IT OFF</h2>' +
-        '<p class="how-intro">Guess the hidden word to crack each vault. After each guess the tiles light up:</p>' +
+        '<p class="how-intro">Played <b>Wordle</b>? You already know the core: guess a hidden word, and the tiles tell you how close you are. i_guess turns that into a heist. Each guess lights up:</p>' +
         '<div class="legend">' +
           '<span class="legend-item"><span class="chip hit">A</span> right letter, right slot</span>' +
           '<span class="legend-item"><span class="chip near">A</span> in the word, wrong slot</span>' +
           '<span class="legend-item"><span class="chip miss">A</span> not in the word</span>' +
         "</div>" +
-        '<div class="how-grid">' +
-          '<div class="how-card"><h4>⛁ Loot is your score</h4><p>Crack fast, with spare guesses and a calm alarm, to earn more. Cracking vaults back-to-back builds a combo multiplier.</p></div>' +
-          '<div class="how-card"><h4>🚨 The alarm is the risk</h4><p>Every <i>wrong</i> guess trips it one notch. Fill it up and the vault locks — no loot, and your combo resets.</p></div>' +
-          '<div class="how-card"><h4>⚙ Spend it in the shop</h4><p>Help yourself — 🔓 reveal a slot, ⏱ +1 guess, 🧯 cool the alarm — or sabotage a rival: ❄ freeze a key, 🌫 jam a clue, 🐀 fake hint. 🛡 Decoy blocks one hit.</p></div>' +
-          '<div class="how-card"><h4>🏆 Winning</h4><p>Most loot after five vaults wins, plus badges. Online, the first to crack each vault grabs a jackpot.</p></div>' +
-        "</div>" +
+        '<h4 class="how-h">How a game goes</h4>' +
+        '<ol class="flow">' +
+          "<li>Pick your <b>crew</b> (1–4) and a <b>job</b> — Heist Run (5 vaults) or Quick Crack (1).</li>" +
+          "<li>Each vault hides a secret word. Type any real word and the tiles light up — <b>exactly like Wordle</b>.</li>" +
+          "<li>Use the colours to narrow it down and <b>crack the word</b> before your guesses run out.</li>" +
+          "<li>Cracking pays <b>loot ⛁</b> — faster, with a calm alarm, pays more. But every <i>wrong</i> guess trips the <b>alarm</b>; fill it and the vault locks with no loot.</li>" +
+          "<li>Spend loot in the <b>gear shop</b> to help yourself (reveal a slot, extra guess, cool the alarm) — or to <b>sabotage</b> a rival (freeze a key, fog a clue, plant a fake hint).</li>" +
+          "<li>Clear all five vaults — <b>most loot wins</b>, plus badges. Online, first to crack each vault grabs a 🏆 jackpot.</li>" +
+        "</ol>" +
         '<div class="how-modes">' +
           "<p><b>Heist Run</b> — five escalating vaults, the full game. &nbsp;<b>Quick Crack</b> — one fast 5-letter vault.</p>" +
           "<p><b>Pass-the-laptop</b> — share one screen, take turns. &nbsp;<b>Play Online</b> — each player joins a room link and races on their own device.</p>" +

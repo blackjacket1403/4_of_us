@@ -563,7 +563,7 @@
   }
 
   function shareResult(ranked, badges) {
-    var lines = ["🔐 TUMBLER — Online Heist (room " + O.roomId + ")"];
+    var lines = ["🔐 i_guess — Online Heist (room " + O.roomId + ")"];
     ranked.forEach(function (p, i) { lines.push((i === 0 ? "🏆 " : "") + p.name + ": cracked " + (p.cracks || 0) + "/" + VAULT_LENS.length + " · ⛁" + (p.loot || 0) + (badges[p.id].length ? " " + badges[p.id].join(" ") : "")); });
     lines.push("play → " + location.origin + location.pathname);
     var text = lines.join("\n");
