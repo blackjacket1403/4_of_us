@@ -151,6 +151,15 @@
   }
   TUMBLER.randomName = randomName;
 
+  // resolve + persist the solo/online alias for this browser (stable across reopens)
+  function defaultAlias(typed) {
+    var v = (typed || "").trim().slice(0, 12);
+    if (!v) v = stats.names[0] || randomName();
+    stats.names[0] = v; saveStats();
+    return v;
+  }
+  TUMBLER.defaultAlias = defaultAlias;
+
   function renderCrewNames() {
     var wrap = $("#crew-names");
     if (!wrap) return;
@@ -180,8 +189,10 @@
     var fields = appEl().querySelectorAll(".crew-input");
     for (var i = 0; i < fields.length; i++) {
       var v = fields[i].value.trim();
+      if (!v) v = randomName();      // blank → assign a handle...
+      v = v.slice(0, 12);
       names.push(v);
-      stats.names[i] = v;
+      stats.names[i] = v;            // ...and keep it (stays the same next game / on reopen)
     }
     saveStats();
 
