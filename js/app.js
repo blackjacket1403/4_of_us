@@ -99,7 +99,7 @@
               '<div class="cfg-row"><span class="cfg-label">JOB</span>' + seg("mode", ["Heist Run", "Quick Crack"], S0.mode) + "</div>" +
               '<div class="mode-desc">' + modeDesc(S0.mode) + "</div>" +
               '<div class="crew-names" id="crew-names"></div>' +
-              '<button class="btn btn--primary cta" id="start">ASSEMBLE CREW ▸</button>' +
+              '<button class="btn btn--primary cta" id="start">' + (S0.crew === 1 ? "PLAY SOLO ▸" : "ASSEMBLE CREW ▸") + "</button>" +
             "</div>" +
             '<div class="online-cta"><span class="online-cta-label">on a call with friends?</span><button class="btn btn--ghost" id="play-online">PLAY ONLINE — LIVE ROOMS ▸</button></div>' +
           "</div>" +
