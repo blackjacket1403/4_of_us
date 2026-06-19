@@ -720,6 +720,11 @@
       ? (top.cracks === S.plan.length ? "CLEAN GETAWAY" : "JOB DONE")
       : esc(top.name) + " TAKES THE SCORE";
 
+    // auto-submit to the world board — no prompting
+    var toPost = ranked.filter(function (p) { return (p.loot || 0) > 0; });
+    toPost.forEach(function (p) { postScore({ name: p.name, loot: p.loot, mode: S.mode, cracks: p.cracks }); });
+    var autoPosted = !!(Net && toPost.length);
+
     var ov = overlayEl();
     ov.innerHTML =
       '<div class="panel gameover-panel">' +
@@ -727,7 +732,7 @@
         '<div class="go-kicker">HEIST COMPLETE</div>' +
         '<h2 class="display go-title">' + headline + "</h2>" +
         '<div class="standings">' + standings + "</div>" +
-        '<button class="btn btn--ghost block go-post" id="go-post">🏆 POST ' + esc(top.name) + "'S ⛁" + top.loot + " TO THE WORLD BOARD</button>" +
+        (autoPosted ? '<div class="go-posted">🏆 Added to the world board</div>' : "") +
         '<div class="go-actions">' +
           '<button class="btn btn--ghost" id="go-share">COPY RESULT</button>' +
           '<button class="btn btn--ghost" id="go-board">LEADERBOARD</button>' +
@@ -741,13 +746,6 @@
     $("#go-home").addEventListener("click", function () { ov.className = "overlay"; ov.innerHTML = ""; renderHome(); });
     $("#go-share").addEventListener("click", function () { shareResult(ranked, badges); });
     $("#go-board").addEventListener("click", function () { ov.className = "overlay"; ov.innerHTML = ""; showLeaderboard(); });
-    $("#go-post").addEventListener("click", function () {
-      var b = this; b.disabled = true; b.textContent = "posting…";
-      postScore({ name: top.name, loot: top.loot, mode: S.mode, cracks: top.cracks }, function (okay) {
-        b.textContent = okay ? "✓ POSTED TO THE WORLD BOARD" : "✗ couldn't post — tap to retry";
-        if (!okay) b.disabled = false;
-      });
-    });
   }
 
   function computeBadges(ranked) {

@@ -80,7 +80,7 @@
   function freshSession() {
     return { active: true, meId: Net.genId(), roomId: null, name: "", color: COLORS[0], isHost: false,
       joined: false, room: {}, board: null, current: "", vaultIdx: -1, streak: 0,
-      applied: {}, overShown: false, advancing: false, tallied: false };
+      applied: {}, overShown: false, advancing: false, tallied: false, posted: false };
   }
 
   function createRoom(name) {
@@ -228,7 +228,7 @@
       effects: { frozenKey: null, fog: 0, decoy: false },
     };
     O.current = ""; O.vaultIdx = idx; O.advancing = false;
-    if (idx === 0) O.tallied = false; // a fresh run can be tallied again at its end
+    if (idx === 0) { O.tallied = false; O.posted = false; } // a fresh run can be tallied/posted again
     Net.update("players/" + O.meId + "/vault", { idx: idx, alarm: 0, guessesUsed: 0, solved: false, busted: false });
     startTimer();
   }
@@ -563,6 +563,11 @@
   function renderOver() {
     stopTimer();
     tallyGame();
+    // auto-submit your own result to the world board — no prompting
+    if (!O.posted && (me().loot || 0) > 0 && TUMBLER.postScore) {
+      O.posted = true;
+      TUMBLER.postScore({ name: O.name, loot: me().loot || 0, mode: "run", cracks: me().cracks || 0 });
+    }
     var ranked = sortedPlayers().sort(function (a, b) { return (b.loot || 0) - (a.loot || 0); });
     var top = ranked[0] || {};
     var badges = computeBadges(ranked, top);
@@ -575,7 +580,7 @@
       '<h2 class="display go-title">' + esc(top.name || "") + " TAKES THE SCORE</h2>" +
       '<div class="standings">' + rows + "</div>" +
       groupBoardHTML() +
-      '<button class="btn btn--ghost block" id="go-post">🏆 POST YOUR ⛁' + (me().loot || 0) + " TO THE WORLD BOARD</button>" +
+      (O.posted ? '<div class="go-posted">🏆 Added to the world board</div>' : "") +
       '<div class="go-actions"><button class="btn btn--ghost" id="go-share">COPY RESULT</button>' +
       '<button class="btn btn--ghost" id="go-world">WORLD BOARD</button>' +
       (O.isHost ? '<button class="btn btn--primary" id="go-again">PLAY AGAIN ▸</button>' : '<button class="btn btn--ghost" id="go-lobby">BACK TO LOBBY</button>') +
@@ -584,13 +589,6 @@
     if (!O.overShown && A) { O.overShown = true; A.crack(); setTimeout(function () { A.loot(); }, 300); }
     $("#go-share").addEventListener("click", function () { shareResult(ranked, badges); });
     $("#go-leave").addEventListener("click", leave);
-    $("#go-post").addEventListener("click", function () {
-      var b = this; b.disabled = true; b.textContent = "posting…";
-      if (TUMBLER.postScore) TUMBLER.postScore({ name: O.name, loot: me().loot || 0, mode: "run", cracks: me().cracks || 0 }, function (ok) {
-        b.textContent = ok ? "✓ POSTED" : "✗ couldn't post — tap to retry"; if (!ok) b.disabled = false;
-      });
-      else { b.textContent = "✗ unavailable"; }
-    });
     var gw = $("#go-world");
     if (gw) gw.addEventListener("click", function () { teardown(); if (TUMBLER.showLeaderboard) TUMBLER.showLeaderboard(); });
     if (O.isHost) $("#go-again").addEventListener("click", playAgain);
@@ -628,7 +626,7 @@
       Net.update("players/" + id, { loot: 0, cracks: 0, busts: 0, vault: { idx: -1, alarm: 0, guessesUsed: 0, solved: false, busted: false }, flags: { ghost: false, ace: false } });
     });
     Net.remove("inbox"); Net.remove("feed"); Net.remove("meta/first");
-    O.streak = 0; O.vaultIdx = -1; O.overShown = false;
+    O.streak = 0; O.vaultIdx = -1; O.overShown = false; O.posted = false; O.tallied = false;
     ov().className = "overlay"; ov().innerHTML = "";
     Net.update("meta", { status: "lobby", seed: seed });
   }

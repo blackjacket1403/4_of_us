@@ -431,6 +431,7 @@ code { font-family: var(--mono); color: var(--brass); }
 .br-loot { font-family: var(--mono); font-weight: 800; color: var(--brass); }
 .board-empty { color: var(--muted); font-size: 14px; line-height: 1.5; padding: 24px 8px; text-align: center; }
 .go-post { margin-top: 6px; }
+.go-posted { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--hit); margin: 4px 0 12px; }
 .group-board { margin: 14px 0; text-align: left; }
 .group-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; color: var(--dim); margin-bottom: 8px; text-transform: uppercase; }
 .group-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 8px 12px; border-radius: 8px; background: var(--steel-800); border: 1px solid var(--line); border-left: 3px solid var(--pc); margin-bottom: 6px; }
