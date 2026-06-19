@@ -112,10 +112,12 @@ code { font-family: var(--mono); color: var(--brass); }
 }
 .seg-opt:hover { color: var(--bone); }
 .seg-opt.active { color: var(--vault-black); background: var(--hit); box-shadow: 0 0 18px rgba(52,224,161,0.35); }
+.mode-desc { font-size: 13px; line-height: 1.5; color: var(--muted); max-width: 52ch; margin: -4px 0 2px; }
+.mode-desc b { color: var(--bone); }
 
 .crew-names { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 2px; }
 .crew-input {
-  font-family: var(--mono); font-size: 14px; color: var(--bone);
+  font-family: var(--mono); font-size: 16px; color: var(--bone);
   background: var(--steel-900); border: 1px solid var(--line);
   border-left: 3px solid var(--pc, var(--hit)); border-radius: 8px;
   padding: 11px 12px; width: 150px; max-width: 46vw;
@@ -349,6 +351,20 @@ code { font-family: var(--mono); color: var(--brass); }
 .chip.near { background: var(--brass); color: #1f1503; }
 .chip.miss { background: #1a1f25; color: var(--dim); }
 
+/* how-to: legend + cards */
+.how-intro { color: var(--muted); margin: 4px 0 14px; line-height: 1.5; }
+.legend { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.legend-item { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--muted); }
+.legend-item .chip { width: 28px; height: 28px; display: inline-grid; place-items: center; border-radius: 6px; font-size: 14px; flex: 0 0 auto; }
+.how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.how-card { background: var(--steel-800); border: 1px solid var(--line); border-radius: 10px; padding: 12px 13px; }
+.how-card h4 { margin: 0 0 5px; font-family: var(--display); font-weight: 600; letter-spacing: 0.03em; font-size: 14px; text-transform: uppercase; color: var(--bone); }
+.how-card p { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+.how-modes { border-top: 1px solid var(--line-soft); padding-top: 12px; margin-bottom: 18px; }
+.how-modes p { margin: 0 0 8px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.how-modes b { color: var(--hit); }
+@media (max-width: 520px) { .how-grid { grid-template-columns: 1fr; } }
+
 /* ---------- ONLINE: home CTA, menu, lobby ---------- */
 .online-cta { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .online-cta-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; }
@@ -419,14 +435,37 @@ code { font-family: var(--mono); color: var(--brass); }
   .crew-names { justify-content: center; }
   .cta { align-self: center; }
   .play { grid-template-columns: 1fr; }
-  .crew { order: -1; }
+  /* board + keyboard first so the keyboard is reachable without scrolling;
+     the crew/status panel sits just below for a quick glance. */
+  .crew { order: 2; margin-top: 16px; padding: 12px; }
+  .crew h3 { margin-bottom: 8px; }
   .crew-cards { flex-direction: row; flex-wrap: wrap; }
-  .crew-card { flex: 1 1 130px; }
+  .crew-card { flex: 1 1 130px; padding: 9px 11px; }
+  .crew-loot { font-size: 16px; margin: 2px 0 6px; }
   .feed-wrap { display: none; }
 }
 @media (max-width: 420px) {
   .key { height: 46px; font-size: 13px; }
   .topbar-actions .tbtn { padding: 8px 9px; font-size: 10px; }
+}
+
+/* ---------- touch + mobile polish ---------- */
+html, body { overflow-x: hidden; }
+button, .key, .seg-opt, .tile, .shop-item, .target-opt, .lobby-seat { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.key, .tile, .seg-opt, .btn, .brand, .tbtn, .crew-card, .vault-label, .rc-code { -webkit-user-select: none; user-select: none; }
+.topbar { padding-top: max(14px, env(safe-area-inset-top)); }
+.kb { padding-bottom: env(safe-area-inset-bottom); }
+.toast { bottom: calc(26px + env(safe-area-inset-bottom)); }
+@media (max-width: 600px) {
+  .key { height: 48px; }
+  .tile { width: clamp(40px, 12.5vw, 52px); }
+  .grid { gap: 6px; margin-bottom: 10px; }
+  .grid-row { gap: 6px; }
+  .vault-head { gap: 10px; margin-bottom: 10px; }
+  .vault-label { font-size: 22px; }
+  .probe-hint { font-size: 11px; margin-bottom: 8px; min-height: 18px; }
+  .turn-chip { order: 3; }
+  .screen.play { padding-top: 14px; }
 }
 
 /* ---------- a11y: focus + reduced motion ---------- */

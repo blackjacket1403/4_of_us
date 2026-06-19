@@ -50,8 +50,8 @@
 
   /* ---------- persistence ---------- */
   function loadSettings() {
-    try { return Object.assign({ sound: false, motion: true }, JSON.parse(localStorage.getItem("tumbler.settings") || "{}")); }
-    catch (e) { return { sound: false, motion: true }; }
+    try { return Object.assign({ sound: true, motion: true }, JSON.parse(localStorage.getItem("tumbler.settings") || "{}")); }
+    catch (e) { return { sound: true, motion: true }; }
   }
   function saveSettings() { try { localStorage.setItem("tumbler.settings", JSON.stringify(settings)); } catch (e) {} }
   function loadStats() {
@@ -96,6 +96,7 @@
             '<div class="home-config">' +
               '<div class="cfg-row"><span class="cfg-label">CREW</span>' + seg("crew", ["1", "2", "3", "4"], String(S0.crew)) + "</div>" +
               '<div class="cfg-row"><span class="cfg-label">JOB</span>' + seg("mode", ["Heist Run", "Quick Crack"], S0.mode) + "</div>" +
+              '<div class="mode-desc">' + modeDesc(S0.mode) + "</div>" +
               '<div class="crew-names" id="crew-names"></div>' +
               '<button class="btn btn--primary cta" id="start">ASSEMBLE CREW ▸</button>' +
             "</div>" +
@@ -123,6 +124,12 @@
       opts.map(function (o) {
         return '<button class="seg-opt' + (o === active ? " active" : "") + '" data-val="' + esc(o) + '">' + esc(o) + "</button>";
       }).join("") + "</div>";
+  }
+
+  function modeDesc(mode) {
+    return mode === "Quick Crack"
+      ? "<b>One 5-letter vault</b> — a fast single round (~1 min). Good for a quick warm-up."
+      : "<b>Five vaults</b>, getting harder (4 → 6 letters), with the gear shop between guesses (~5 min). The full game — most loot wins, badges at the end.";
   }
 
   function renderCrewNames() {
@@ -817,7 +824,6 @@
       '<g class="dial-knob"><circle cx="100" cy="100" r="46"/>' +
       '<line class="dial-grip" x1="100" y1="62" x2="100" y2="100"/>' +
       '<circle class="dial-hub" cx="100" cy="100" r="7"/></g>' +
-      '<text class="dial-num" x="100" y="150" text-anchor="middle">' + Math.round(progress * 99) + "</text>" +
       "</svg></div>";
   }
 
@@ -842,14 +848,23 @@
     ov.innerHTML =
       '<div class="panel how-panel">' +
         '<h2 class="display">HOW TO PULL IT OFF</h2>' +
-        '<ol class="how-list">' +
-          "<li><b>Crack the vault.</b> Guess the hidden word. A <span class=\"chip hit\">pin set</span> is the right letter in the right slot; a <span class=\"chip near\">loose pin</span> is in the word, wrong slot; <span class=\"chip miss\">dead</span> isn't in it.</li>" +
-          "<li><b>Mind the alarm.</b> Every wrong guess trips it one notch. Max it out and the vault locks — you lose the haul and your combo.</li>" +
-          "<li><b>Bank the loot ⛁.</b> Crack fast, with guesses and a quiet alarm to spare, for a bigger payout. Cracking vault after vault builds a combo multiplier.</li>" +
-          "<li><b>Spend it in the GEAR shop.</b> Buy a PROBE, JIMMY or DEFUSE to help yourself — or burn loot to FREEZE, FOG and PLANT fake intel on a rival's run. A DECOY blocks the next hit.</li>" +
-          "<li><b>Take turns.</b> On a crew job, pass the laptop. Each player cracks their own vault; first to crack each one grabs the 🏆 jackpot. Most loot after five vaults wins.</li>" +
-        "</ol>" +
-        '<button class="btn btn--primary" id="how-close">GOT IT</button>' +
+        '<p class="how-intro">Guess the hidden word to crack each vault. After each guess the tiles light up:</p>' +
+        '<div class="legend">' +
+          '<span class="legend-item"><span class="chip hit">A</span> right letter, right slot</span>' +
+          '<span class="legend-item"><span class="chip near">A</span> in the word, wrong slot</span>' +
+          '<span class="legend-item"><span class="chip miss">A</span> not in the word</span>' +
+        "</div>" +
+        '<div class="how-grid">' +
+          '<div class="how-card"><h4>⛁ Loot is your score</h4><p>Crack fast, with spare guesses and a calm alarm, to earn more. Cracking vaults back-to-back builds a combo multiplier.</p></div>' +
+          '<div class="how-card"><h4>🚨 The alarm is the risk</h4><p>Every <i>wrong</i> guess trips it one notch. Fill it up and the vault locks — no loot, and your combo resets.</p></div>' +
+          '<div class="how-card"><h4>⚙ Spend it in the shop</h4><p>Help yourself — 🔓 reveal a slot, ⏱ +1 guess, 🧯 cool the alarm — or sabotage a rival: ❄ freeze a key, 🌫 jam a clue, 🐀 fake hint. 🛡 Decoy blocks one hit.</p></div>' +
+          '<div class="how-card"><h4>🏆 Winning</h4><p>Most loot after five vaults wins, plus badges. Online, the first to crack each vault grabs a jackpot.</p></div>' +
+        "</div>" +
+        '<div class="how-modes">' +
+          "<p><b>Heist Run</b> — five escalating vaults, the full game. &nbsp;<b>Quick Crack</b> — one fast 5-letter vault.</p>" +
+          "<p><b>Pass-the-laptop</b> — share one screen, take turns. &nbsp;<b>Play Online</b> — each player joins a room link and races on their own device.</p>" +
+        "</div>" +
+        '<button class="btn btn--primary block" id="how-close">GOT IT</button>' +
       "</div>";
     ov.className = "overlay show";
     $("#how-close").addEventListener("click", function () { ov.className = "overlay"; ov.innerHTML = ""; });

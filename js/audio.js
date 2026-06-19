@@ -59,7 +59,8 @@
   var Audio = {
     setEnabled: function (v) {
       enabled = !!v;
-      if (enabled) ensure();
+      // don't create the AudioContext here — wait for the first real sound,
+      // which always follows a user gesture (avoids the autoplay warning).
     },
     isEnabled: function () {
       return enabled;
