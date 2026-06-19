@@ -292,7 +292,7 @@
     var kb = "";
     KB_ROWS.forEach(function (row, ri) {
       kb += '<div class="kb-row">';
-      if (ri === 2) kb += '<button class="key wide" data-k="enter">ENTER</button>';
+      if (ri === 2) kb += '<button class="key wide enter-key" data-k="enter" aria-label="Enter">✓</button>';
       for (var i = 0; i < row.length; i++) { var ch = row[i]; kb += '<button class="key ' + (ks[ch] || "") + (b.effects.frozenKey === ch ? " frozen" : "") + '" data-k="' + ch + '">' + ch.toUpperCase() + "</button>"; }
       if (ri === 2) kb += '<button class="key wide" data-k="back">⌫</button>';
       kb += "</div>";

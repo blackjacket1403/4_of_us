@@ -240,7 +240,8 @@ code { font-family: var(--mono); color: var(--brass); }
 }
 .key:hover { background: var(--steel-600); }
 .key:active { transform: translateY(2px); box-shadow: 0 0 0 #0c1014; }
-.key.wide { flex: 1.6 1 0; font-size: 11px; letter-spacing: 0.08em; }
+.key.wide { flex: 1.4 1 0; font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center; padding: 0; }
+.key.enter-key { color: var(--hit); font-weight: 800; }
 .key.hit { background: var(--hit); color: #06150f; border-color: var(--hit); }
 .key.near { background: var(--brass); color: #1f1503; border-color: var(--brass); }
 .key.miss { background: #11151a; color: var(--dim); box-shadow: none; }

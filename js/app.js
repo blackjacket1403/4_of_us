@@ -382,7 +382,7 @@
     var html = "";
     KB_ROWS.forEach(function (row, ri) {
       html += '<div class="kb-row">';
-      if (ri === 2) html += '<button class="key wide" data-k="enter">ENTER</button>';
+      if (ri === 2) html += '<button class="key wide enter-key" data-k="enter" aria-label="Enter">✓</button>';
       for (var i = 0; i < row.length; i++) {
         var ch = row[i];
         var st = ks[ch] || "";
