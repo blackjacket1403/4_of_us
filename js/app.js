@@ -1045,6 +1045,9 @@
     }
     // honour OS reduced-motion as the default unless user toggled
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) settings.motion = false;
+    // returning players keep an identity — if they've played before but have no
+    // saved name (e.g. older data), give them one now so we never ask again
+    if (!stats.names[0] && (stats.heists > 0 || stats.bestLoot > 0)) { stats.names[0] = randomName(); saveStats(); }
     bindTopbar();
     // a shared ?room= link drops you straight into the join flow
     var room = (location.search.match(/[?&]room=([A-Za-z0-9]+)/) || [])[1];
