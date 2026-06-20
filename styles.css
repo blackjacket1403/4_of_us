@@ -421,8 +421,12 @@ code { font-family: var(--mono); color: var(--brass); }
 /* ---------- leaderboard ---------- */
 .board { display: grid; place-items: center; min-height: 64vh; }
 .board-panel { width: min(540px, 96vw); text-align: center; }
-.board-list { display: flex; flex-direction: column; gap: 6px; margin: 16px 0; max-height: 58vh; overflow: auto; text-align: left; }
-.board-row { display: grid; grid-template-columns: 34px 1fr auto auto; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 9px; background: var(--steel-800); border: 1px solid var(--line); }
+.board-tabs { display: inline-flex; gap: 4px; background: var(--steel-900); border: 1px solid var(--line); border-radius: 10px; padding: 4px; margin: 14px 0 4px; }
+.board-tab { font-family: var(--mono); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; color: var(--muted); background: none; border: 0; cursor: pointer; padding: 9px 16px; border-radius: 7px; text-transform: uppercase; transition: all .15s; }
+.board-tab:hover { color: var(--bone); }
+.board-tab.active { color: var(--vault-black); background: var(--brass); }
+.board-list { display: flex; flex-direction: column; gap: 6px; margin: 16px 0; max-height: 52vh; overflow: auto; text-align: left; }
+.board-row { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 9px; background: var(--steel-800); border: 1px solid var(--line); }
 .board-row.top { border-color: var(--brass-deep); }
 .br-rank { font-family: var(--mono); font-weight: 800; color: var(--dim); text-align: center; }
 .board-row.top .br-rank { font-size: 18px; }

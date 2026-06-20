@@ -132,15 +132,19 @@
    */
   function crackLoot(opts) {
     var len = opts.len;
-    var rowsLeft = opts.rowsLeft || 0;        // unused guess rows
+    var rowsLeft = opts.rowsLeft || 0;        // unused guess rows — fewer guesses → more
     var alarmLeft = opts.alarmLeft || 0;      // unused alarm pips
     var seconds = opts.seconds || 0;          // time taken (s)
     var combo = opts.combo || 1;
     var base = 20 * len;                      // 80 / 100 / 120
-    var speed = rowsLeft * 15;
+    var speed = rowsLeft * 15;                // guess-dependent reward
     var calm = alarmLeft * 10;
-    var quick = Math.max(0, 60 - Math.floor(seconds)); // small time bonus, floors at 0
-    var raw = base + speed + calm + quick;
+    // time-dependent: a bonus for a fast crack, a real penalty for a slow one (par ~35s)
+    var time = Math.round((35 - seconds) * 1.5);
+    if (time > 70) time = 70;
+    if (time < -70) time = -70;
+    var raw = base + speed + calm + time;
+    if (raw < 10) raw = 10;                   // a crack is always worth something
     return Math.round(raw * combo);
   }
 

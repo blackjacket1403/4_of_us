@@ -96,7 +96,8 @@
             '<p class="lede">A word-heist for one to four. Crack escalating vaults, bank the loot, and spend it to gear up — or to freeze, fog, and bluff the friends sitting next to you. Pass the laptop and take turns.</p>' +
             '<div class="home-config">' +
               '<div class="cfg-row"><span class="cfg-label">CREW</span>' + seg("crew", ["1", "2", "3", "4"], String(S0.crew)) + "</div>" +
-              '<div class="mode-desc">' + modeDesc() + "</div>" +
+              '<div class="cfg-row"><span class="cfg-label">JOB</span>' + seg("mode", ["Heist Run", "Quick Crack"], S0.mode) + "</div>" +
+              '<div class="mode-desc">' + modeDesc(S0.mode) + "</div>" +
               '<div class="crew-names" id="crew-names"></div>' +
               '<button class="btn btn--primary cta" id="start">' + (S0.crew === 1 ? "PLAY SOLO ▸" : "ASSEMBLE CREW ▸") + "</button>" +
               (("speechSynthesis" in window) ? '<label class="readrules-opt"><input type="checkbox" id="read-rules"' + (settings.readRules ? " checked" : "") + '><span>🔊 Read the rules aloud when I start</span></label>' : "") +
@@ -132,8 +133,10 @@
       }).join("") + "</div>";
   }
 
-  function modeDesc() {
-    return "<b>Five vaults</b>, getting harder (4 → 6 letters), with the gear shop between guesses (~5 min). Crack them, bank the loot — most loot wins, plus badges at the end.";
+  function modeDesc(mode) {
+    return mode === "Quick Crack"
+      ? "<b>One 5-letter vault</b> — a fast single round (~1 min), Wordle-style. Has its own leaderboard."
+      : "<b>Five vaults</b>, getting harder (4 → 6 letters), with the gear shop between guesses (~5 min). The competitive run — most loot wins, badges at the end.";
   }
 
   // random heist codename so the leaderboard isn't full of "You"
@@ -176,6 +179,7 @@
     if (opt) {
       var seg = opt.parentElement.getAttribute("data-seg");
       if (seg === "crew") { S0.crew = parseInt(opt.getAttribute("data-val"), 10); renderHome(); }
+      else if (seg === "mode") { S0.mode = opt.getAttribute("data-val"); renderHome(); }
     }
   });
 
@@ -193,8 +197,8 @@
     saveStats();
 
     var crew = S0.crew;
-    var mode = "run";
-    var plan = VAULTS.slice();
+    var mode = S0.mode === "Quick Crack" ? "quick" : "run";
+    var plan = mode === "quick" ? [{ len: 5 }] : VAULTS.slice();
 
     var players = [];
     for (var p = 0; p < crew; p++) {
@@ -332,7 +336,7 @@
   function renderPlay() {
     var b = activeBoard();
     var pl = activePlayer();
-    var vlabel = "VAULT " + (S.vaultIdx + 1) + " / " + S.plan.length;
+    var vlabel = (S.mode === "quick" ? "QUICK CRACK" : "VAULT " + (S.vaultIdx + 1) + " / " + S.plan.length);
     appEl().innerHTML =
       '<section class="screen play">' +
         '<div class="play-main">' +
@@ -784,7 +788,7 @@
 
   function shareResult(ranked, badges) {
     var url = location.origin + location.pathname;
-    var lines = ["🔐 i_guess — Heist Run"];
+    var lines = ["🔐 i_guess — " + (S.mode === "quick" ? "Quick Crack" : "Heist Run")];
     ranked.forEach(function (pl) {
       lines.push((pl.id === ranked[0].id && S.crew > 1 ? "🏆 " : "") + pl.name + ": cracked " + pl.cracks + "/" + S.plan.length + " · ⛁" + pl.loot + (badges[pl.id].length ? " " + badges[pl.id].join(" ") : ""));
     });
@@ -896,7 +900,7 @@
         "</div>" +
         '<h4 class="how-h">How a game goes</h4>' +
         '<ol class="flow">' +
-          "<li>Pick your <b>crew</b> — 1 to 4 players.</li>" +
+          "<li>Pick your <b>crew</b> (1–4) and a <b>job</b> — Heist Run (5 vaults) or Quick Crack (1). Each has its own leaderboard.</li>" +
           "<li>Each vault hides a secret word. Type any real word and the tiles light up — <b>exactly like Wordle</b>.</li>" +
           "<li>Use the colours to narrow it down and <b>crack the word</b> before your guesses run out.</li>" +
           "<li>Cracking pays <b>loot ⛁</b> — faster, with a calm alarm, pays more. But every <i>wrong</i> guess trips the <b>alarm</b>; fill it and the vault locks with no loot.</li>" +
@@ -904,6 +908,7 @@
           "<li>Clear all five vaults — <b>most loot wins</b>, plus badges. Online, first to crack each vault grabs a 🏆 jackpot.</li>" +
         "</ol>" +
         '<div class="how-modes">' +
+          "<p><b>Heist Run</b> — five vaults, the competitive game. &nbsp;<b>Quick Crack</b> — one fast vault. Separate leaderboards.</p>" +
           "<p><b>Pass-the-laptop</b> — share one screen, take turns. &nbsp;<b>Play Online</b> — each player joins a room link and races on their own device.</p>" +
         "</div>" +
         '<div class="how-foot">' +
@@ -922,7 +927,7 @@
     if (opts.autoRead && listenBtn) speakRules(listenBtn);
   }
 
-  var RULES_SPEECH = "Here's how to play, i guess. If you've played Wordle, you already know the heart of it. You guess a hidden word, and after each guess the tiles show how close you are. Green means the right letter in the right spot. Gold means the letter is in the word, but the wrong spot. Grey means it's not in the word. i guess turns that into a heist. First, pick your crew — one to four players. You then crack five vaults that get harder as you go. Each vault hides a secret word. Type any real word, then use the colours to crack it before your guesses run out. Cracking a vault pays loot. The faster you crack it, with a calm alarm, the more you earn. But every wrong guess trips the alarm, and if it fills up, the vault locks and you get nothing. Spend your loot in the gear shop to help yourself: reveal a letter, buy an extra guess, or cool the alarm. Or spend it to sabotage a rival: freeze a key, fog their clue, or plant a fake hint. After five vaults, whoever has the most loot wins. Now go crack some vaults.";
+  var RULES_SPEECH = "Here's how to play, i guess. If you've played Wordle, you already know the heart of it. You guess a hidden word, and after each guess the tiles show how close you are. Green means the right letter in the right spot. Gold means the letter is in the word, but the wrong spot. Grey means it's not in the word. i guess turns that into a heist. First, pick your crew, one to four players, and a job. A heist run is five vaults that get harder, with its own leaderboard. Quick crack is a single fast vault with a separate leaderboard. Each vault hides a secret word. Type any real word, then use the colours to crack it before your guesses run out. Cracking a vault pays loot. The faster you crack it, with a calm alarm, the more you earn. But every wrong guess trips the alarm, and if it fills up, the vault locks and you get nothing. Spend your loot in the gear shop to help yourself: reveal a letter, buy an extra guess, or cool the alarm. Or spend it to sabotage a rival: freeze a key, fog their clue, or plant a fake hint. After five vaults, whoever has the most loot wins. Now go crack some vaults.";
   function speakRules(btn) {
     if (!("speechSynthesis" in window)) return;
     var synth = window.speechSynthesis;
@@ -938,30 +943,43 @@
   /* ====================================================================
    *  WORLD LEADERBOARD (global, via Firebase; local-only without it)
    * ==================================================================== */
+  var boardData = {};
+  var boardTab = "run"; // 'run' (Heist Run) or 'quick'
   function showLeaderboard() {
     appEl().innerHTML =
       '<section class="screen board"><div class="panel board-panel">' +
         '<h2 class="display">WORLD LEADERBOARD</h2>' +
-        '<p class="muted">Biggest hauls from everyone who has posted a score.</p>' +
+        '<div class="board-tabs">' +
+          '<button class="board-tab' + (boardTab === "run" ? " active" : "") + '" data-tab="run">HEIST RUN</button>' +
+          '<button class="board-tab' + (boardTab === "quick" ? " active" : "") + '" data-tab="quick">QUICK CRACK</button>' +
+        "</div>" +
         (Net && Net.mode === "local" ? '<div class="demo-banner">⚠ Showing this browser only. Add your Firebase config for a shared world board.</div>' : "") +
         '<div id="board-list" class="board-list"><div class="board-empty">loading…</div></div>' +
         '<button class="btn btn--ghost block back" id="board-back">← BACK</button>' +
       "</div></section>";
+    Array.prototype.forEach.call(document.querySelectorAll(".board-tab"), function (t) {
+      t.addEventListener("click", function () {
+        boardTab = t.getAttribute("data-tab");
+        Array.prototype.forEach.call(document.querySelectorAll(".board-tab"), function (x) { x.classList.toggle("active", x === t); });
+        renderBoardList(boardData);
+      });
+    });
     $("#board-back").addEventListener("click", function () { try { Net.offGlobal("leaderboard"); } catch (e) {} renderHome(); });
     if (!Net) return;
-    Net.onGlobal("leaderboard", renderBoardList, function () {
+    Net.onGlobal("leaderboard", function (data) { boardData = data || {}; renderBoardList(boardData); }, function () {
       var el = $("#board-list");
       if (el) el.innerHTML = '<div class="board-empty">World board isn\'t switched on yet. Add the <code>leaderboard</code> rule in Firebase (see the README), then post a score.</div>';
     });
   }
   function renderBoardList(data) {
     var el = $("#board-list"); if (!el) return;
-    var arr = Object.keys(data || {}).map(function (k) { return data[k]; }).filter(function (e) { return e && typeof e.loot === "number"; });
+    var arr = Object.keys(data || {}).map(function (k) { return data[k]; })
+      .filter(function (e) { return e && typeof e.loot === "number" && (e.mode === "quick" ? "quick" : "run") === boardTab; });
     arr.sort(function (a, b) { return b.loot - a.loot; });
-    if (!arr.length) { el.innerHTML = '<div class="board-empty">No scores yet — be the first to post one!</div>'; return; }
+    if (!arr.length) { el.innerHTML = '<div class="board-empty">No ' + (boardTab === "quick" ? "Quick Crack" : "Heist Run") + ' scores yet — be the first!</div>'; return; }
     el.innerHTML = arr.slice(0, 30).map(function (e, i) {
       var rank = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1);
-      return '<div class="board-row' + (i < 3 ? " top" : "") + '"><span class="br-rank">' + rank + '</span><span class="br-name">' + esc(e.name || "Anon") + '</span><span class="br-mode">' + (e.mode === "quick" ? "Quick" : "Run") + '</span><span class="br-loot">⛁ ' + e.loot + "</span></div>";
+      return '<div class="board-row' + (i < 3 ? " top" : "") + '"><span class="br-rank">' + rank + '</span><span class="br-name">' + esc(e.name || "Anon") + '</span><span class="br-loot">⛁ ' + e.loot + "</span></div>";
     }).join("");
   }
   function postScore(entry, onDone) {

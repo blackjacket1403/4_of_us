@@ -29,11 +29,18 @@ and builds a whole heist around it:
     vaults at once with live sabotage. First to crack each vault grabs the 🏆 jackpot;
     most loot after five vaults wins. Solo? It's a roguelike score chase against the alarm.
 
-## The heist
+## Modes
 
-A run is **five escalating vaults** (4 → 5 → 6 letters), with the gear shop between
-guesses and badges at the end. Crew size **1–4**. Earn badges: 👑 Kingpin · 💎 Flawless
-· 👻 Ghost · 🎯 Safecracker · 💰 Big Score.
+| Mode | What it is |
+|------|------------|
+| **Heist Run** | Five escalating vaults (4 → 5 → 6 letters), a shop between guesses, badges at the end — the competitive game. |
+| **Quick Crack** | A single 5-letter vault, Wordle-style. Fast. |
+
+Each mode has its **own world leaderboard**, so a one-vault sprint never competes with a
+five-vault run. Crew size **1–4**. Earn badges: 👑 Kingpin · 💎 Flawless · 👻 Ghost · 🎯 Safecracker · 💰 Big Score.
+
+**Scoring** rewards **fewer guesses** and a **faster solve** (with a time penalty for slow
+ones); cracking vaults back-to-back builds a combo multiplier.
 
 ## Play online (live rooms)
 
